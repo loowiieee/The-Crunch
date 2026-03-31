@@ -30,7 +30,6 @@ const MyOrders = () => {
     const [expandedId, setExpandedId] = useState(null);
     const [indexError, setIndexError] = useState(false);
 
-    // 🔔 Real-time order status notifications
     useNotifications({ userId: currentUser?.uid, role: "customer" });
 
     useEffect(() => {
@@ -226,7 +225,14 @@ const MyOrders = () => {
 };
 
 const o = {
-    page: { backgroundColor: "#f8f8f8", minHeight: "100vh", paddingTop: "100px", paddingBottom: "60px" },
+    // ── FIX: pull page up behind navbar, compensate with padding-top ──
+    page: {
+        backgroundColor: "#f8f8f8",
+        minHeight: "100vh",
+        marginTop: "-80px",
+        paddingTop: "calc(80px + 40px)",
+        paddingBottom: "60px",
+    },
     container: { maxWidth: "800px", margin: "0 auto", padding: "0 24px" },
     header: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "36px", borderBottom: "4px solid #1A1A1A", paddingBottom: "20px" },
     title: { fontFamily: "'Oswald', sans-serif", fontSize: "52px", fontWeight: "900", color: "#1A1A1A", margin: "0 0 4px" },

@@ -13,6 +13,10 @@ import OrderSuccess from "./OrderSuccess";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorBoundary from "./ErrorBoundary";
 
+const PageWrapper = ({ children }) => (
+    <div style={{ paddingTop: "80px" }}>{children}</div>
+);
+
 function App() {
   return (
     <ErrorBoundary>
@@ -20,18 +24,15 @@ function App() {
         <CartProvider>
           <Router>
             <Navbar />
-            
-            <div style={{ marginTop: "80px" }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/orders" element={<MyOrders />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-              </Routes>
-            </div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<PageWrapper><Menu /></PageWrapper>} />
+              <Route path="/orders" element={<PageWrapper><MyOrders /></PageWrapper>} />
+              <Route path="/auth" element={<PageWrapper><Auth /></PageWrapper>} />
+              <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
+              <Route path="/admin" element={<PageWrapper><ProtectedRoute><AdminPanel /></ProtectedRoute></PageWrapper>} />
+              <Route path="/order-success" element={<PageWrapper><OrderSuccess /></PageWrapper>} />
+            </Routes>
           </Router>
         </CartProvider>
       </AuthProvider>

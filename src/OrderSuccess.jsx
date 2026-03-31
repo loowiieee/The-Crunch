@@ -135,13 +135,18 @@ const OrderSuccess = () => {
 };
 
 const s = {
+    // ── FIX: pull page up behind navbar, compensate with padding-top ──
     page: {
         minHeight: "100vh",
         backgroundColor: "#F0EEE8",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "60px 20px",
+        marginTop: "-80px",
+        paddingTop: "calc(80px + 60px)",
+        paddingBottom: "60px",
+        paddingLeft: "20px",
+        paddingRight: "20px",
         fontFamily: "'Public Sans', sans-serif",
         backgroundImage: "radial-gradient(#d0cec8 1px, transparent 1px)",
         backgroundSize: "20px 20px",
@@ -157,7 +162,6 @@ const s = {
         position: "relative",
     },
 
-    /* Tear edges */
     tearTop: {
         width: "100%",
         height: "16px",

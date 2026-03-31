@@ -35,17 +35,15 @@ const SettingsTab = () => {
     const [newPasscode, setNewPasscode] = useState("");
     const [confirmPasscode, setConfirmPasscode] = useState("");
     const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState(""); // "success" or "error"
+    const [messageType, setMessageType] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleChangePasscode = async (e) => {
         e.preventDefault();
         setMessage("");
         
-        // Get current passcode from localStorage
         const currentStoredPasscode = localStorage.getItem("adminPasscode") || "CRUNCH2024ADMIN";
         
-        // Validation
         if (!currentPasscode || !newPasscode || !confirmPasscode) {
             setMessageType("error");
             setMessage("All fields are required");
@@ -367,10 +365,8 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(false);
     const [uploadError, setUploadError] = useState("");
 
-    // 🔔 Real-time new-order notifications for admin
     useNotifications({ userId: "admin", role: "admin" });
 
-    // ✅ 1. MOVE THE DEFINITION HERE (ABOVE THE USEEFFECT)
     const loadProducts = async () => {
         const data = await getProducts();
         setProducts(data);
@@ -380,7 +376,6 @@ const AdminPanel = () => {
         if (!authLoading && !isAdmin) navigate("/");
     }, [isAdmin, authLoading, navigate]);
 
-    // ✅ 2. NOW THIS CAN SAFELY ACCESS loadProducts
     useEffect(() => { 
         loadProducts(); 
     }, []);
@@ -448,7 +443,6 @@ const AdminPanel = () => {
                         width: 150px !important; 
                         height: 150px !important; 
                     }
-                    .admin-page { margin-top: 80px; }
                     .admin-form-grid {
                         grid-template-columns: 1fr !important;
                     }
@@ -460,86 +454,96 @@ const AdminPanel = () => {
                 }
             `}</style>
             <div style={styles.page}>
-            <div style={styles.header}>
-                <h1 style={styles.title}>ADMIN PANEL</h1>
-                <div style={styles.tabs}>
-                    {["Products", "Orders", "Settings"].map(tab => (
-                        <button key={tab} style={{ ...styles.tab, backgroundColor: activeTab === tab ? "#FFC72C" : "#fff", boxShadow: activeTab === tab ? "3px 3px 0 #1A1A1A" : "2px 2px 0 #ccc", color: activeTab === tab ? "#1A1A1A" : "#888" }} onClick={() => setActiveTab(tab)}>
-                            {tab === "Products" ? "🛍️" : tab === "Orders" ? "📋" : "⚙️"} {tab.toUpperCase()}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {activeTab === "Products" && (
-                <>
-                    <div style={styles.formBox}>
-                        <h2 style={styles.formTitle}>{editingId ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}</h2>
-                        <div className="admin-form-grid" style={styles.grid}>
-                            {["name", "price", "description", "category"].map(field => (
-                                <input key={field} placeholder={field.charAt(0).toUpperCase() + field.slice(1)} value={form[field]} onChange={e => setForm({ ...form, [field]: e.target.value })} style={styles.input} />
-                            ))}
-                            <div style={styles.uploadBox} className="admin-upload-box" onClick={() => document.getElementById("imgUpload").click()}
-                                onMouseEnter={e => { const ov = e.currentTarget.querySelector(".upload-overlay"); if (ov) ov.style.opacity = "1"; }}
-                                onMouseLeave={e => { const ov = e.currentTarget.querySelector(".upload-overlay"); if (ov) ov.style.opacity = "0"; }}
-                            >
-                                {form.imageUrl ? (
-                                    <>
-                                        <img src={form.imageUrl} alt="preview" style={styles.uploadPreview} />
-                                        <div className="upload-overlay" style={styles.uploadOverlay}>
-                                            <span style={{ fontSize: "22px" }}>📷</span>
-                                            <p style={styles.uploadOverlayText}>CHANGE IMAGE</p>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div style={styles.uploadPlaceholder}>
-                                        <span style={{ fontSize: "32px" }}>📁</span>
-                                        <p style={styles.uploadText}>CLICK TO UPLOAD IMAGE</p>
-                                        <p style={styles.uploadHint}>PNG, JPG, WEBP supported</p>
-                                    </div>
-                                )}
-                                <input id="imgUpload" type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
-                            </div>
-                            <label style={styles.toggle}>
-                                <input type="checkbox" checked={form.available} onChange={e => setForm({ ...form, available: e.target.checked })} />
-                                &nbsp; Available
-                            </label>
-                        </div>
-                        {uploadError && <div style={styles.errorBox}>⚠️ {uploadError}</div>}
-                        <div style={styles.btnRow}>
-                            <button onClick={handleSubmit} style={styles.btnPrimary} disabled={loading}>{loading ? "SAVING..." : editingId ? "UPDATE" : "ADD PRODUCT"}</button>
-                            {editingId && <button onClick={handleCancel} style={styles.btnSecondary}>CANCEL</button>}
-                        </div>
-                    </div>
-
-                    <div style={styles.list}>
-                        {products.map(p => (
-                            <div key={p.id} style={styles.row}>
-                                <img src={p.imageUrl || PH} alt={p.name} style={styles.thumb} onError={e => { e.target.src = PH; }} />
-                                <div style={styles.rowInfo}>
-                                    <strong>{p.name}</strong>
-                                    <span style={{ color: "#666" }}> — ₱{p.price} | {p.category} | {p.available ? "✅ Available" : "❌ Sold Out"}</span>
-                                    {p.imageUrl && <div style={styles.urlPreview}>{p.imageUrl}</div>}
-                                </div>
-                                <div style={styles.rowBtns}>
-                                    <button onClick={() => handleEdit(p)} style={styles.btnEdit}>EDIT</button>
-                                    <button onClick={() => handleDelete(p.id)} style={styles.btnDelete}>DELETE</button>
-                                </div>
-                            </div>
+                <div style={styles.header}>
+                    <h1 style={styles.title}>ADMIN PANEL</h1>
+                    <div style={styles.tabs}>
+                        {["Products", "Orders", "Settings"].map(tab => (
+                            <button key={tab} style={{ ...styles.tab, backgroundColor: activeTab === tab ? "#FFC72C" : "#fff", boxShadow: activeTab === tab ? "3px 3px 0 #1A1A1A" : "2px 2px 0 #ccc", color: activeTab === tab ? "#1A1A1A" : "#888" }} onClick={() => setActiveTab(tab)}>
+                                {tab === "Products" ? "🛍️" : tab === "Orders" ? "📋" : "⚙️"} {tab.toUpperCase()}
+                            </button>
                         ))}
                     </div>
-                </>
-            )}
+                </div>
 
-            {activeTab === "Orders" && <OrdersTab />}
-            {activeTab === "Settings" && <SettingsTab />}
-        </div>
+                {activeTab === "Products" && (
+                    <>
+                        <div style={styles.formBox}>
+                            <h2 style={styles.formTitle}>{editingId ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}</h2>
+                            <div className="admin-form-grid" style={styles.grid}>
+                                {["name", "price", "description", "category"].map(field => (
+                                    <input key={field} placeholder={field.charAt(0).toUpperCase() + field.slice(1)} value={form[field]} onChange={e => setForm({ ...form, [field]: e.target.value })} style={styles.input} />
+                                ))}
+                                <div style={styles.uploadBox} className="admin-upload-box" onClick={() => document.getElementById("imgUpload").click()}
+                                    onMouseEnter={e => { const ov = e.currentTarget.querySelector(".upload-overlay"); if (ov) ov.style.opacity = "1"; }}
+                                    onMouseLeave={e => { const ov = e.currentTarget.querySelector(".upload-overlay"); if (ov) ov.style.opacity = "0"; }}
+                                >
+                                    {form.imageUrl ? (
+                                        <>
+                                            <img src={form.imageUrl} alt="preview" style={styles.uploadPreview} />
+                                            <div className="upload-overlay" style={styles.uploadOverlay}>
+                                                <span style={{ fontSize: "22px" }}>📷</span>
+                                                <p style={styles.uploadOverlayText}>CHANGE IMAGE</p>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div style={styles.uploadPlaceholder}>
+                                            <span style={{ fontSize: "32px" }}>📁</span>
+                                            <p style={styles.uploadText}>CLICK TO UPLOAD IMAGE</p>
+                                            <p style={styles.uploadHint}>PNG, JPG, WEBP supported</p>
+                                        </div>
+                                    )}
+                                    <input id="imgUpload" type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
+                                </div>
+                                <label style={styles.toggle}>
+                                    <input type="checkbox" checked={form.available} onChange={e => setForm({ ...form, available: e.target.checked })} />
+                                    &nbsp; Available
+                                </label>
+                            </div>
+                            {uploadError && <div style={styles.errorBox}>⚠️ {uploadError}</div>}
+                            <div style={styles.btnRow}>
+                                <button onClick={handleSubmit} style={styles.btnPrimary} disabled={loading}>{loading ? "SAVING..." : editingId ? "UPDATE" : "ADD PRODUCT"}</button>
+                                {editingId && <button onClick={handleCancel} style={styles.btnSecondary}>CANCEL</button>}
+                            </div>
+                        </div>
+
+                        <div style={styles.list}>
+                            {products.map(p => (
+                                <div key={p.id} style={styles.row}>
+                                    <img src={p.imageUrl || PH} alt={p.name} style={styles.thumb} onError={e => { e.target.src = PH; }} />
+                                    <div style={styles.rowInfo}>
+                                        <strong>{p.name}</strong>
+                                        <span style={{ color: "#666" }}> — ₱{p.price} | {p.category} | {p.available ? "✅ Available" : "❌ Sold Out"}</span>
+                                        {p.imageUrl && <div style={styles.urlPreview}>{p.imageUrl}</div>}
+                                    </div>
+                                    <div style={styles.rowBtns}>
+                                        <button onClick={() => handleEdit(p)} style={styles.btnEdit}>EDIT</button>
+                                        <button onClick={() => handleDelete(p.id)} style={styles.btnDelete}>DELETE</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                {activeTab === "Orders" && <OrdersTab />}
+                {activeTab === "Settings" && <SettingsTab />}
+            </div>
         </>
     );
 };
 
 const styles = {
-    page: { padding: "clamp(16px, 4vw, 40px)", backgroundColor: "#F9F9F9", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", marginTop: "80px" },
+    // ── FIX: match Home's pattern — pull up behind navbar, pad top to compensate ──
+    page: {
+        padding: "clamp(16px, 4vw, 40px)",
+        paddingTop: "calc(80px + clamp(16px, 4vw, 40px))",
+        marginTop: "-80px",
+        backgroundColor: "#F9F9F9",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+    },
     header: { display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", marginBottom: "30px", flexWrap: "wrap", gap: "16px", width: "100%", maxWidth: "1200px" },
     title: { fontFamily: "'Oswald', sans-serif", fontSize: "clamp(32px, 8vw, 48px)", margin: 0, textAlign: "center" },
     tabs: { display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center" },

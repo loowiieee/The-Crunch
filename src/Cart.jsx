@@ -82,22 +82,20 @@ const Cart = () => {
                 @media (max-width: 768px) {
                     .cart-page {
                         flex-direction: column !important;
-                        min-height: auto !important;
-                        margin-top: 80px;
                     }
 
-                    /* Left panel: full width, no right border */
                     .cart-left {
                         flex: none !important;
                         width: 100% !important;
+                        margin-right: 0 !important;
                         box-sizing: border-box !important;
                         border-right: none !important;
                         border-bottom: 3px solid #1A1A1A !important;
-                        padding: 24px 16px !important;
+                        padding: 100px 16px 24px !important;
                     }
 
-                    /* Right panel: full width, natural height, no overflow */
                     .cart-right {
+                        position: static !important;
                         width: 100% !important;
                         flex-shrink: unset !important;
                         flex-basis: auto !important;
@@ -105,13 +103,11 @@ const Cart = () => {
                         border-left: none !important;
                         border-top: 3px solid #1A1A1A !important;
                         background: white !important;
-                        /* Remove any fixed/min heights that could cause overlap */
                         min-height: unset !important;
                         max-height: unset !important;
                         overflow: visible !important;
                     }
 
-                    /* Toggle button: always visible on mobile */
                     .toggle-summary-btn {
                         display: flex !important;
                         width: 100% !important;
@@ -130,13 +126,11 @@ const Cart = () => {
                         box-sizing: border-box !important;
                     }
 
-                    /* Summary card: un-stick it, collapse/expand naturally */
                     .cart-summary-card {
                         position: static !important;
                         top: auto !important;
                         padding: 20px 16px !important;
                         margin: 0 !important;
-                        /* Collapse animation */
                         overflow: hidden !important;
                         transition: max-height 0.3s ease, opacity 0.3s ease !important;
                     }
@@ -219,7 +213,6 @@ const Cart = () => {
 
             {/* ── RIGHT: Order summary ── */}
             <div style={s.right} className="cart-right">
-                {/* Toggle button — only visible on mobile via CSS */}
                 <button
                     style={s.toggleSummaryBtn}
                     onClick={() => setShowSummaryMobile(prev => !prev)}
@@ -228,17 +221,12 @@ const Cart = () => {
                     {showSummaryMobile ? "▲ HIDE ORDER SUMMARY" : "▼ SHOW ORDER SUMMARY"}
                 </button>
 
-                {/* 
-                    On mobile: apply "collapsed" or "expanded" class to drive CSS transition.
-                    On desktop: CSS ignores these classes (max-height: none).
-                */}
                 <div
                     style={s.summaryCard}
                     className={`cart-summary-card ${showSummaryMobile ? "expanded" : "collapsed"}`}
                 >
                     <h2 style={s.summaryTitle}>ORDER SUMMARY</h2>
 
-                    {/* Customer name */}
                     <div style={{ marginBottom: "16px" }}>
                         <p style={{ fontFamily: "'Oswald', sans-serif", fontWeight: "900", margin: "0 0 8px" }}>
                             CUSTOMER NAME
@@ -258,7 +246,6 @@ const Cart = () => {
                         />
                     </div>
 
-                    {/* Totals */}
                     <div style={s.summaryRows}>
                         <div style={s.summaryRow}>
                             <span style={s.summaryLabel}>Subtotal</span>
@@ -277,7 +264,6 @@ const Cart = () => {
                         </div>
                     </div>
 
-                    {/* Payment method */}
                     <div style={s.paymentBox}>
                         <p style={s.paymentTitle}>PAYMENT METHOD</p>
                         {["Cash", "GCash", "QRPH"].map(method => (
@@ -294,7 +280,6 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    {/* Confirm */}
                     <button
                         style={{
                             ...s.confirmBtn,
@@ -322,13 +307,13 @@ const s = {
         minHeight: "100vh",
         backgroundColor: "#F5F5F5",
         fontFamily: "'Public Sans', sans-serif",
+        marginTop: "-80px",   // pull behind navbar
     },
     left: {
         flex: 1,
-        padding: "48px 40px",
-        borderRight: "3px solid #1A1A1A",
-        /* Ensure it never goes below its natural width on desktop */
+        padding: "128px 40px 48px", // top padding clears the 80px navbar + breathing room
         minWidth: 0,
+        marginRight: "360px",       // offset for the fixed right panel
     },
     backBtn: {
         background: "none",
@@ -468,20 +453,23 @@ const s = {
     },
     right: {
         width: "360px",
-        flexShrink: 0,
-        padding: "48px 32px",
+        position: "fixed",          // locked in place — never scrolls
+        top: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: "#fff",
         borderLeft: "3px solid #1A1A1A",
+        overflow: "hidden",         // no scrollbar on the summary panel
+        padding: "128px 32px 48px", // top clears navbar
+        boxSizing: "border-box",
+        zIndex: 10,
     },
     summaryCard: {
-        position: "sticky",
-        top: "100px",
         display: "flex",
         flexDirection: "column",
         gap: "0",
     },
     toggleSummaryBtn: {
-        /* Hidden on desktop via CSS class; shown on mobile */
         display: "none",
     },
     summaryTitle: {

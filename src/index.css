@@ -6,7 +6,6 @@
   --brand-white: #FFFFFF;
 }
 
-/* FORCING FULL WIDTH ON THE ENTIRE BROWSER */
 html, body, #root {
   margin: 0 !important;
   padding: 0 !important;
@@ -21,7 +20,16 @@ body {
   color: var(--brand-black);
 }
 
-/* Base utility for centered content */
+/* Hide scrollbar but keep scrollable */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .container {
   width: 100%;
   max-width: 1200px;
